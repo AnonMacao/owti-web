@@ -60,7 +60,6 @@
 
   function bindEvents() {
     document.getElementById("start-button").addEventListener("click", startQuiz);
-    document.getElementById("sample-button").addEventListener("click", useRandomAnswers);
     document.getElementById("jump-model-button").addEventListener("click", () => {
       refs.modelAnchor.open = true;
       refs.modelAnchor.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -150,15 +149,26 @@
   }
 
   function getScaleDotConfig(value) {
-    const map = {
-      3: { size: 56, color: "#3ea85f" },
-      2: { size: 50, color: "#67bb69" },
-      1: { size: 42, color: "#95c97a" },
-      0: { size: 30, color: "#d8cfbf" },
-      "-1": { size: 42, color: "#e6b07d" },
-      "-2": { size: 50, color: "#da8567" },
-      "-3": { size: 56, color: "#cb5a57" }
-    };
+    const isMobile = window.matchMedia("(max-width: 720px)").matches;
+    const map = isMobile
+      ? {
+          3: { size: 38, color: "#3ea85f" },
+          2: { size: 34, color: "#67bb69" },
+          1: { size: 28, color: "#95c97a" },
+          0: { size: 18, color: "#d8cfbf" },
+          "-1": { size: 28, color: "#e6b07d" },
+          "-2": { size: 34, color: "#da8567" },
+          "-3": { size: 38, color: "#cb5a57" }
+        }
+      : {
+          3: { size: 56, color: "#3ea85f" },
+          2: { size: 50, color: "#67bb69" },
+          1: { size: 42, color: "#95c97a" },
+          0: { size: 30, color: "#d8cfbf" },
+          "-1": { size: 42, color: "#e6b07d" },
+          "-2": { size: 50, color: "#da8567" },
+          "-3": { size: 56, color: "#cb5a57" }
+        };
     return map[String(value)];
   }
 

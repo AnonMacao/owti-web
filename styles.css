@@ -979,6 +979,21 @@ button:disabled {
     margin-bottom: 14px;
   }
 
+  .quiz-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .quiz-footer button {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    padding: 13px 12px;
+    font-size: 14px;
+  }
+
   .stat-strip {
     grid-template-columns: 1fr;
   }
@@ -1018,11 +1033,15 @@ button:disabled {
   }
 
   .option-list-scale {
-    gap: 4px;
+    gap: 6px;
+    padding-inline: 2px;
   }
 
   .scale-dot {
     transform-origin: center bottom;
+    max-width: 100%;
+    max-height: 100%;
+    border-width: 2px;
   }
 
   .result-grid {
