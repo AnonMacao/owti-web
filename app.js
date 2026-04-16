@@ -91,6 +91,7 @@
     Object.entries(screens).forEach(([name, element]) => {
       element.classList.toggle("active", name === key);
     });
+    document.body.dataset.screen = key;
   }
 
   function clamp(value, min, max) {

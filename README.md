@@ -1,90 +1,61 @@
 # OWTI
 
-`OWTI` 是一个基于《守望先锋》角色人格设定的单页测试网站。用户完成题目后，页面会根据人格向量匹配最接近的角色类型，并生成可导出的分享图。
+`OWTI` 是一个以《守望先锋》角色气质为灵感的人格匹配测试。
 
-## 本地预览
+你可以通过一组题目，得到最接近你的角色人格类型、对应的人格代号、稀有度，以及一张可导出的分享图。
 
-如果只是查看页面，直接打开 [index.html](./index.html) 也可以。
+## 你会看到什么
 
-如果你要测试“导出分享图”这类浏览器下载行为，推荐走本地服务器而不是 `file://`：
+- `30` 道随机题目
+- `12` 个角色人格类型
+- 你的匹配结果与 Top 3 相似角色
+- 人格代号、稀有度、维度解释
+- 可导出的分享图
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\start-local-server.ps1
-```
+## 怎么使用
 
-然后在浏览器里打开：
+打开网站首页后，直接点击“开始测试”即可。
 
-```text
-http://localhost:4173/
-```
+完成题目后，你会看到：
 
-## 当前功能
+- 最接近你的角色类型
+- 对应的人格代号
+- 一段人格描述
+- 相似角色排名
+- 可下载的分享图
 
-- `100` 题题库中每次随机抽 `30` 题
-- `8` 个连续人格维度
-- `12` 个首发角色人格向量
-- Top 1 / Top 3 匹配结果
-- 角色 Q 版图接入
-- 结果页分享图导出
+## 手机端建议
 
-## 项目结构
+推荐直接使用手机浏览器打开。
 
-- [index.html](./index.html): 页面结构
-- [styles.css](./styles.css): 页面样式
-- [app.js](./app.js): 测试逻辑、结果渲染、分享图导出
-- [model.js](./model.js): 角色设定、人格代号、向量数据
-- [questions.js](./questions.js): 题库
-- [assets/heroes](./assets/heroes): 角色立绘
-- [start-local-server.ps1](./start-local-server.ps1): 本地预览服务器
+如果你想导出分享图，建议等待结果页中的角色图片完全显示后，再点击“导出分享图”。
 
-## 发布到 GitHub Pages
+## 关于结果
 
-这个项目是纯静态网站，最适合直接部署到 GitHub Pages。
+这个测试更接近“角色人格气质匹配”，不是竞技水平测试，也不是官方心理测评。
 
-### 方式一：网页直接上传
+结果仅供娱乐和分享使用。
 
-适合当前这台机器没有安装 `git` 的情况。
+## 角色与设定说明
 
-1. 去 GitHub 新建一个仓库，例如 `owti-web`
-2. 打开仓库首页，点击 `Add file` -> `Upload files`
-3. 把这个文件夹里的内容全部拖进去：
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `model.js`
-   - `questions.js`
-   - `assets/`
-   - `.nojekyll`
-   - `README.md`
-4. 上传完成后，进入仓库 `Settings` -> `Pages`
-5. 在 `Build and deployment` 中选择：
-   - `Source`: `Deploy from a branch`
-   - `Branch`: `main`
-   - `Folder`: `/ (root)`
-6. 保存后等待 1-3 分钟
+测试中的角色人格向量，参考了《守望先锋》官方公开角色设定，并做了二次整理和量化建模。
 
-最后你的网站通常会是：
+这意味着：
 
-```text
-https://你的用户名.github.io/owti-web/
-```
+- 它不是暴雪官方测试
+- 它不是专业心理学量表
+- 它更适合作为同人测试产品体验
 
-### 方式二：以后装好 git 再推送
+## 分享与导出
 
-如果你后面装了 git，可以在项目目录运行：
+结果页支持导出分享图。
 
-```powershell
-git init
-git add .
-git commit -m "Initial OWTI site"
-git branch -M main
-git remote add origin https://github.com/你的用户名/owti-web.git
-git push -u origin main
-```
+如果浏览器直接打开本地文件时导出不稳定，建议使用本地网页方式访问后再导出。
 
-## 后续建议
+## 版权说明
 
-- 加一个 favicon 和社交分享图
-- 给结果页做手机端长图优化
-- 接入统计，看各角色分布和完成率
-- 如果后续想上自定义域名，可以再接 Cloudflare 或 GitHub Pages 自带域名配置
+本项目为同人测试原型。
+
+《守望先锋》及相关角色名称、设定版权归其原版权方所有。
+
+如果你要公开发布、传播或商业化使用，建议你进一步确认相关版权和素材使用风险。

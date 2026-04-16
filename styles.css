@@ -907,18 +907,33 @@ button:disabled {
 
 @media (max-width: 720px) {
   .page-shell {
-    width: min(100% - 16px, 1380px);
-    margin: 16px auto;
+    width: 100%;
+    margin: 0;
+    gap: 12px;
   }
 
   .info-panel,
   .work-panel {
-    padding: 16px;
+    padding: 14px;
+    border-radius: 22px;
   }
 
   .stage {
     min-height: auto;
-    padding: 20px 16px;
+    padding: 16px 14px 18px;
+  }
+
+  .work-panel {
+    border-radius: 0 0 24px 24px;
+  }
+
+  .info-panel {
+    display: none;
+    margin: 0 12px 16px;
+  }
+
+  body[data-screen="intro"] .info-panel {
+    display: block;
   }
 
   .hero-head {
@@ -961,6 +976,7 @@ button:disabled {
   .quiz-topbar {
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 14px;
   }
 
   .stat-strip {
@@ -972,10 +988,44 @@ button:disabled {
   }
 
   .scale-head {
-    margin-top: 22px;
+    margin-top: 18px;
   }
 
   .scale-label {
     font-size: 12px;
+  }
+
+  .question-card,
+  .result-slab,
+  .comparison-card,
+  .debug-card,
+  .hero-banner,
+  .intro-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .question-card h2 {
+    font-size: 28px;
+  }
+
+  .question-card p {
+    font-size: 14px;
+  }
+
+  .question-card-compact {
+    max-width: 100%;
+  }
+
+  .option-list-scale {
+    gap: 4px;
+  }
+
+  .scale-dot {
+    transform-origin: center bottom;
+  }
+
+  .result-grid {
+    gap: 14px;
   }
 }
