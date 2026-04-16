@@ -58,14 +58,14 @@ window.DIMENSIONS = [
 ];
 
 window.DIMENSION_WEIGHTS = {
-  warmth: 1.2,
-  protectiveness: 1.15,
-  idealism: 1.1,
-  principle: 1.1,
-  candor: 1,
-  independence: 0.95,
-  playfulness: 0.9,
-  introspection: 1
+  warmth: 0.95,
+  protectiveness: 0.95,
+  idealism: 1.05,
+  principle: 1.2,
+  candor: 1.1,
+  independence: 1.2,
+  playfulness: 1,
+  introspection: 1.2
 };
 
 window.DIMENSION_META = {
@@ -172,7 +172,7 @@ window.HEROES = [
     blurb: "你更像会优先看见人的脆弱和可救之处的人。你在关系里的力量不是压迫感，而是稳定和照拂。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/mercy/",
     sourceNote: "官网聚焦她的医者伦理与救人信念，兼具慈悲、责任感和温和克制。",
-    vector: { warmth: 68, protectiveness: 72, idealism: 58, principle: 52, candor: 42, independence: 32, playfulness: 18, introspection: 70 }
+    vector: { warmth: 78, protectiveness: 90, idealism: 60, principle: 56, candor: 32, independence: 18, playfulness: 14, introspection: 82 }
   },
   {
     id: "sombra",
@@ -182,7 +182,7 @@ window.HEROES = [
     typeCode: "SOMB",
     typeLabel: "拿捏者",
     typeTagline: "你不一定站在台前，但你很难允许自己失去主动权。",
-    matchScale: 0.98,
+    matchScale: 0.92,
     rarityScore: 84,
     rarityLabel: "少见",
     personaCopy: "CTRL 型的人，最核心的欲望不是被喜欢，而是掌握局势。你会天然去看信息、关系、立场和权力流向，哪怕你嘴上没说，心里也早就在拆解每个人的动机。比起立刻交心，你更相信保留、试探和布局。你知道太早把底牌翻出来，通常不会有好结果，所以你宁愿聪明一点、慢一点，也不愿意把主动权交出去。别人可能会觉得你神秘、难懂，甚至有点危险，但这套模式背后常常不是恶意，而是一种很深的自保本能。CTRL 的厉害之处，是永远知道该看哪里、抓哪里、留哪里。CTRL 的辛苦之处，是很难真正松手。你太清楚失控意味着什么，所以很难毫无防备地信任谁。这会让你看起来很强，但也容易在关系里始终保留最后一层门锁。",
@@ -190,7 +190,7 @@ window.HEROES = [
     blurb: "你更像把主动权看得很重的人。比起立刻交心，你更相信观察、布局和掌握信息差。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/sombra/",
     sourceNote: "官网把她写成用信息操控权力的人，聪明、保留、以自我掌控和策略性为先。",
-    vector: { warmth: 24, protectiveness: 22, idealism: 30, principle: 34, candor: 28, independence: 78, playfulness: 62, introspection: 60 }
+    vector: { warmth: 18, protectiveness: 12, idealism: 16, principle: 28, candor: 18, independence: 88, playfulness: 60, introspection: 56 }
   },
   {
     id: "winston",
@@ -200,7 +200,7 @@ window.HEROES = [
     typeCode: "WNST",
     typeLabel: "守望者",
     typeTagline: "你明白世界不完美，却仍愿意为更好的共同体站出来。",
-    matchScale: 1.00,
+    matchScale: 1.06,
     rarityScore: 88,
     rarityLabel: "少见",
     personaCopy: "KEEP 型的人格，有一种非常稀缺的气质: 不是空泛的理想，而是仍然愿意把理想留在现实里。你不是不知道世界复杂，也不是没见过失望和失败，但你心里仍旧保有一种“总得有人去守住点什么”的信念。你对共同体、承诺、未来和人与人之间仍可能存在的善意，有一种近乎固执的信任。你可能不总是最轻盈的那个人，但往往会在重要时刻重新站出来，把散掉的东西再往一起收。别人会在你身上看到一种很温厚的力量，不喧哗，却能给人支撑感。KEEP 型最大的优点，是可以在犬儒蔓延的时候仍不放弃相信。最大的难点，是你容易把“守住一切”的责任揽得过重，像是只要自己没退，世界就还能再撑一下。",
@@ -208,7 +208,7 @@ window.HEROES = [
     blurb: "你身上有一种温柔的理想感。你并不天真，但还是愿意相信共同体和值得守护的未来。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/winston/",
     sourceNote: "官网强调科学理想、对人类善意的信任，以及为了更大的共同体重新站出来。",
-    vector: { warmth: 66, protectiveness: 76, idealism: 82, principle: 62, candor: 56, independence: 30, playfulness: 34, introspection: 54 }
+    vector: { warmth: 58, protectiveness: 62, idealism: 88, principle: 60, candor: 64, independence: 44, playfulness: 22, introspection: 48 }
   },
   {
     id: "ana",
@@ -226,7 +226,7 @@ window.HEROES = [
     blurb: "你像那种不会轻易把情绪摊开，但会默默背责任的人。你现实、成熟，也很难对需要保护的人无动于衷。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/ana/",
     sourceNote: "官网把她写成老练、克制、背负责任的人，既现实也非常在意守护。",
-    vector: { warmth: 40, protectiveness: 58, idealism: 32, principle: 80, candor: 36, independence: 58, playfulness: 14, introspection: 78 }
+    vector: { warmth: 34, protectiveness: 62, idealism: 22, principle: 88, candor: 32, independence: 64, playfulness: 10, introspection: 86 }
   },
   {
     id: "genji",
@@ -254,7 +254,7 @@ window.HEROES = [
     typeCode: "ZEN",
     typeLabel: "澄明者",
     typeTagline: "你不是靠声量影响别人，而是靠安定本身让人靠近。",
-    matchScale: 0.98,
+    matchScale: 0.92,
     rarityScore: 82,
     rarityLabel: "少见",
     personaCopy: "CALM 型的人，身上最强的力量不是存在感，而是安定感。你天然对内在世界、精神秩序和情绪流动很敏感，也因此很容易成为别人愿意靠近、倾诉、甚至寻求理解的对象。你并不一定很热闹，但你会让人感到自己在你面前可以慢下来、真实一点。你相信理解本身有力量，也相信一个人只有先和自己和解，才能真正面对世界。CALM 型不追求戏剧化的征服感，更在意深层的整合、平衡和清醒。你的优点，是慈悲、包容、稳定且洞察细腻。你的难点，是有时太容易退回到精神世界里，像是看透了很多东西，也因此更难轻易被拉进喧哗和混乱之中。",
@@ -262,7 +262,7 @@ window.HEROES = [
     blurb: "你更像那种先处理内在，再影响外部的人。你的人格重心不在喧闹，而在理解、安定和真正的内在平衡。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/zenyatta/",
     sourceNote: "官网强调慈悲、平静，以及帮助他人跨越内心挣扎、寻找内在安宁。",
-    vector: { warmth: 64, protectiveness: 50, idealism: 60, principle: 50, candor: 46, independence: 34, playfulness: 10, introspection: 78 }
+    vector: { warmth: 66, protectiveness: 40, idealism: 78, principle: 62, candor: 34, independence: 44, playfulness: 8, introspection: 96 }
   },
   {
     id: "kiriko",
@@ -290,7 +290,7 @@ window.HEROES = [
     typeCode: "MEI",
     typeLabel: "暖光者",
     typeTagline: "你不是最喧闹的那个，但会让很多人愿意继续相信。",
-    matchScale: 1.04,
+    matchScale: 0.96,
     rarityScore: 85,
     rarityLabel: "少见",
     personaCopy: "GLOW 型的人，力量感往往不是轰鸣式的，而是持续发热式的。你不靠攻击感、不靠压迫感，也不一定靠绝对强势来影响别人。你更像一盏一直亮着的灯，温和、耐心、稳定，甚至在别人开始觉得一切都不值得时，你还在一点点把事情往前推。你对世界保有很珍贵的善意和信念，这种信念不吵，却很难被真正熄灭。别人会从你身上感到舒服、可信和一种很难得的“没关系，我们慢慢来也可以”。GLOW 型很适合在混乱里做秩序的缓冲层，也很适合在冷掉的人际里重新点起温度。你的难点，是容易低估自己，或者把自己的坚持包装得太轻，以至于别人忘记了你其实也非常坚韧。",
@@ -298,7 +298,7 @@ window.HEROES = [
     blurb: "你更像那种不会用攻击感证明自己的人。你靠温柔、耐心和持续的信念感把事情慢慢做成。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/mei/",
     sourceNote: "官网强调她对地球与人的温柔、坚持和乐观。",
-    vector: { warmth: 68, protectiveness: 50, idealism: 70, principle: 44, candor: 40, independence: 24, playfulness: 18, introspection: 58 }
+    vector: { warmth: 76, protectiveness: 54, idealism: 82, principle: 50, candor: 36, independence: 16, playfulness: 20, introspection: 70 }
   },
   {
     id: "reaper",
@@ -308,7 +308,7 @@ window.HEROES = [
     typeCode: "REAP",
     typeLabel: "暮刃者",
     typeTagline: "你不会轻易交出信任，很多情绪都被你收成了锋利。",
-    matchScale: 0.68,
+    matchScale: 0.84,
     rarityScore: 93,
     rarityLabel: "稀有",
     personaCopy: "DUSK 型的人格里，有非常强的边界和阴影感。你不擅长轻易相信，也不喜欢把脆弱暴露在别人看得见的地方。很多人会先注意到你的冷感、疏离、警惕甚至攻击性，但这些外层壳往往只是因为你太清楚失望、背叛和失控会留下什么。你倾向把情绪收进身体里，把目标抓在手里，用一种几乎不留退路的方式往前走。你不是没有感受，而是很多感受已经被你压缩成了意志。DUSK 的强大，在于极端情况下仍能维持向前推进的硬度。DUSK 的辛苦，在于这份硬度太容易同时切伤自己。你把门锁得很紧，所以别人很难靠近；可同样地，连你自己有时也很难回到真正柔软的地方。",
@@ -316,7 +316,7 @@ window.HEROES = [
     blurb: "你更像边界极强、信任阈值很高的人。你不是没有情绪，而是更倾向把痛苦和目标都握在自己手里。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/reaper/",
     sourceNote: "官网把他写成被愤怒与复仇驱动的人物，孤绝、阴郁、以破坏性目标前行。",
-    vector: { warmth: 18, protectiveness: 14, idealism: 16, principle: 28, candor: 22, independence: 72, playfulness: 14, introspection: 26 }
+    vector: { warmth: 12, protectiveness: 10, idealism: 10, principle: 44, candor: 22, independence: 82, playfulness: 8, introspection: 28 }
   },
   {
     id: "moira",
@@ -326,7 +326,7 @@ window.HEROES = [
     typeCode: "MOIR",
     typeLabel: "轴心者",
     typeTagline: "你更信判断和效率，而不是温情叙事。",
-    matchScale: 0.78,
+    matchScale: 0.90,
     rarityScore: 97,
     rarityLabel: "超稀有",
     personaCopy: "AXIS 型的人，最典型的特质是冷静、强判断、自我中心轴非常稳。你不太会因为多数人的情绪、道德期待或舆论风向就改变自己的认知路径。对你来说，很多人眼里“应该如此”的东西，不过是社会默认值，不代表你必须接受。你更在意的是事实、效率、推进和结果本身。你可以非常专注、非常聪明，也非常不容易被情绪左右。别人可能会觉得你强势、难搞、过于冷酷，甚至不近人情，但从你的视角看，那只是因为你比很多人更少被温情故事说服。AXIS 的优点，是认知清醒、行动果断、不容易被集体情绪裹挟。AXIS 的风险，是一旦过度相信只有自己的判断可靠，就容易让人与人的连接退化成纯粹的功能关系。",
@@ -334,6 +334,6 @@ window.HEROES = [
     blurb: "你更接近把效率、认知和自我判断放在道德情绪前面的人。你在乎推进，而不太愿意被温情叙事束缚。",
     sourceUrl: "https://overwatch.blizzard.com/en-us/heroes/moira/",
     sourceNote: "官网强调她只在乎科研推进本身，冷酷、理智、漠视伦理约束。",
-    vector: { warmth: 24, protectiveness: 16, idealism: 28, principle: 24, candor: 52, independence: 60, playfulness: 8, introspection: 70 }
+    vector: { warmth: 16, protectiveness: 10, idealism: 14, principle: 22, candor: 64, independence: 68, playfulness: 6, introspection: 78 }
   }
 ];

@@ -513,14 +513,14 @@
     });
 
     const quotas = {
-      warmth: 5,
-      protectiveness: 5,
+      warmth: 4,
+      protectiveness: 4,
       idealism: 4,
       principle: 4,
       candor: 4,
-      independence: 3,
+      independence: 4,
       playfulness: 2,
-      introspection: 3
+      introspection: 4
     };
     const selected = [];
 
