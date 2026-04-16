@@ -1,5 +1,6 @@
 (function () {
   const RESULT_POOL_KEY = "OWTI_RESULT_POOL_V1";
+  const PENDING_UPLOAD_KEY = "OWTI_PENDING_UPLOADS_V1";
   const DEVELOPER_PASSWORD = "owti2026";
   const DEVELOPER_SESSION_KEY = "OWTI_DEVELOPER_SESSION";
   const SUPABASE_URL = "https://uzhdavpdgwlnnxmbztkl.supabase.co";
@@ -69,6 +70,7 @@
     renderDimensionList();
     renderRoster();
     bindEvents();
+    void flushPendingUploads();
     void maybeOpenDeveloperScreenFromUrl();
   }
 
@@ -233,6 +235,18 @@
     window.localStorage.setItem(RESULT_POOL_KEY, JSON.stringify(pool));
   }
 
+  function getPendingUploads() {
+    try {
+      return JSON.parse(window.localStorage.getItem(PENDING_UPLOAD_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function savePendingUploads(items) {
+    window.localStorage.setItem(PENDING_UPLOAD_KEY, JSON.stringify(items));
+  }
+
   async function recordResult(topResult, userVector) {
     const record = {
       heroId: topResult.hero.id,
@@ -246,25 +260,42 @@
     const pool = getResultPool();
     pool.push(record);
     saveResultPool(pool);
+    queuePendingUpload(record);
+    await flushPendingUploads();
+  }
 
+  function queuePendingUpload(record) {
+    const pending = getPendingUploads();
+    pending.push(record);
+    savePendingUploads(pending);
+  }
+
+  async function flushPendingUploads() {
     if (!supabaseClient) {
       return;
     }
 
+    const pending = getPendingUploads();
+    if (!pending.length) {
+      return;
+    }
+
+    const payload = pending.map((record) => ({
+      hero_id: record.heroId,
+      hero_name: record.heroName,
+      type_code: record.typeCode,
+      similarity: record.similarity,
+      tags: record.tags,
+      created_at: record.createdAt
+    }));
+
     try {
-      const { error } = await supabaseClient
-        .from("owti_results")
-        .insert({
-          hero_id: record.heroId,
-          hero_name: record.heroName,
-          type_code: record.typeCode,
-          similarity: record.similarity,
-          tags: record.tags,
-          created_at: record.createdAt
-        });
+      const { error } = await supabaseClient.from("owti_results").insert(payload);
       if (error) {
         console.error("Supabase insert failed:", error.message);
+        return;
       }
+      savePendingUploads([]);
     } catch (error) {
       console.error("Supabase insert failed:", error);
     }
@@ -304,6 +335,8 @@
   }
 
   async function fetchResultPool() {
+    await flushPendingUploads();
+
     if (!supabaseClient) {
       return getResultPool();
     }
