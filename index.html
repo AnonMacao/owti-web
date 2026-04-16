@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OWTI | 守望先锋人格匹配测试</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <aside class="panel info-panel">
+      <div class="eyebrow">OWTI Prototype</div>
+      <h1>守望先锋人格匹配测试</h1>
+      <p class="lede">这一版先把“人格向量匹配”做实：题目不测玩法，而是测你在共情、原则、理想、边界感和自我整合上的倾向，再与官方英雄页的人设文本做量化匹配。</p>
+
+      <div class="stat-strip">
+        <div class="stat-card">
+          <div class="stat-label">首发角色</div>
+          <div id="hero-count" class="stat-value">12</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">人格维度</div>
+          <div id="dimension-count" class="stat-value">8</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">每次作答</div>
+          <div id="question-count" class="stat-value">30</div>
+        </div>
+      </div>
+
+      <details class="fold-panel" id="model-anchor">
+        <summary>
+          <span>查看角色与维度设定</span>
+          <span class="fold-hint">展开</span>
+        </summary>
+        <div class="fold-content">
+          <section class="subsection fold-section">
+            <h2>量化维度</h2>
+            <p>每个维度都会被换算成 `0-100` 的连续分值。角色向量来自官网设定的二次建模，不是暴雪官方公开标签。</p>
+            <div id="dimension-list" class="dimension-list"></div>
+          </section>
+
+          <section class="subsection fold-section">
+            <h2>建模方式</h2>
+            <p>题目先生成你的 `8` 维人格向量，再用加权均方差计算你与角色的距离，输出最接近的英雄和 Top 3 相似角色。这样更像“人格气质匹配”，而不是“战术打法归类”。</p>
+          </section>
+
+          <section class="subsection fold-section">
+            <h2>本版角色依据</h2>
+            <p>首发选了 12 个人格辨识度很高的角色，下面的说明都基于官网英雄页的背景与角色定位做的压缩总结。</p>
+            <div id="hero-roster" class="hero-roster"></div>
+          </section>
+        </div>
+      </details>
+    </aside>
+
+    <main class="panel work-panel">
+      <div class="stage">
+        <section id="screen-intro" class="screen intro-screen active">
+          <div class="hero-banner">
+            <div class="eyebrow">Single Page Test</div>
+            <h2>用户点击即可做题，结果直接匹配最接近的 OW 角色人格。</h2>
+            <p>这一版是静态单页原型，打开 `index.html` 就能运行。没有登录、没有后端，题库计分、角色相似度和结果解释都在本地完成，适合你先校准“像不像”。</p>
+          </div>
+
+          <div class="intro-grid">
+            <div class="intro-card">
+              <div>
+                <h3>这版已经包含</h3>
+                <ul>
+                  <li>100 题题库中每次随机抽 30 题，使用五档同意度量表</li>
+                  <li>12 个角色的人格向量与官方来源链接</li>
+                  <li>Top 1 与 Top 3 角色匹配结果</li>
+                  <li>雷达图、维度对照和自动生成的结果解读</li>
+                </ul>
+              </div>
+              <div class="cta-row">
+                <button id="start-button" class="primary-btn">开始测试</button>
+                <button id="sample-button" class="secondary-btn">随机体验一组答案</button>
+              </div>
+            </div>
+
+            <div class="intro-card">
+              <div>
+                <h3>适合你接下来做什么</h3>
+                <ul>
+                  <li>先看角色分布是不是太集中，避免总是测出同一两个人</li>
+                  <li>请熟悉角色设定的玩家试测，看“我觉得像谁”与结果是否接近</li>
+                  <li>如果想继续做 UI 或小程序，这一层数据和算法可以直接迁移</li>
+                </ul>
+              </div>
+              <div class="cta-row">
+                <button id="jump-model-button" class="ghost-btn">先看角色建模</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-quiz" class="screen">
+          <div class="quiz-topbar">
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span id="progress-text">第 1 / 24 题</span>
+                <span id="progress-percent">4%</span>
+              </div>
+              <div class="progress-track">
+                <div id="progress-fill" class="progress-fill"></div>
+              </div>
+            </div>
+            <div class="quiz-footer">
+              <button id="prev-button" class="secondary-btn">上一题</button>
+              <button id="restart-button" class="ghost-btn">重新开始</button>
+            </div>
+          </div>
+
+          <article class="question-card question-card-compact">
+            <div class="eyebrow">Question</div>
+            <h2 id="question-title"></h2>
+            <p id="question-subtitle">请根据“这句话有多像你”作答。</p>
+            <div class="scale-head">
+              <span class="scale-label scale-label-left">完全同意</span>
+              <span class="scale-label scale-label-right">完全不同意</span>
+            </div>
+            <div id="option-list" class="option-list option-list-scale"></div>
+          </article>
+        </section>
+
+        <section id="screen-result" class="screen">
+          <div class="result-grid">
+            <div class="result-slab">
+              <div id="result-share-card" class="result-hero-stack">
+                <div class="hero-visual hero-visual-large">
+                  <img id="result-portrait" class="result-portrait" alt="">
+                  <div id="hero-badge" class="hero-badge"></div>
+                </div>
+                <div class="result-kicker">Your OWTI Match</div>
+                <div id="result-type-code" class="result-type-code result-type-code-hero"></div>
+                <h2 id="result-name"></h2>
+                <p id="result-type-tagline" class="result-type-tagline result-type-tagline-hero"></p>
+                <div class="result-meta-row result-meta-row-center">
+                  <div id="result-rarity-pill" class="result-rarity-pill"></div>
+                </div>
+                <p id="result-summary" class="result-summary result-summary-hero"></p>
+              </div>
+
+              <div id="tag-row" class="tag-row"></div>
+              <div id="story-blocks" class="story-blocks"></div>
+
+              <div class="result-actions">
+                <button id="export-button" class="ghost-btn">导出分享图</button>
+                <button id="retake-button" class="primary-btn">再测一次</button>
+                <button id="back-to-model-button" class="secondary-btn">回到角色建模</button>
+              </div>
+
+              <div id="fine-print" class="fine-print"></div>
+            </div>
+
+            <div class="comparison-card">
+              <h3>匹配结构</h3>
+              <canvas id="radar-canvas" width="340" height="340"></canvas>
+              <div id="top-match-list" class="top-match-list"></div>
+            </div>
+          </div>
+
+          <div class="result-spacer"></div>
+
+          <div class="result-grid">
+            <div class="debug-card">
+              <h3>维度对照</h3>
+              <div id="metric-list" class="metric-list"></div>
+            </div>
+
+            <div class="debug-card">
+              <h3>你的向量摘要</h3>
+              <div id="vector-tags" class="tag-row"></div>
+              <p id="vector-note" class="fine-print vector-note"></p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="./model.js"></script>
+  <script src="./questions.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
