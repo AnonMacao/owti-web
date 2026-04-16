@@ -12,7 +12,9 @@
     answers: [],
     userVector: null,
     ranking: [],
-    bounds: {}
+    bounds: {},
+    syncMessage: "",
+    syncState: ""
   };
 
   const screens = {
@@ -46,6 +48,7 @@
     resultName: document.getElementById("result-name"),
     resultTypeTagline: document.getElementById("result-type-tagline"),
     resultSummary: document.getElementById("result-summary"),
+    syncStatus: document.getElementById("sync-status"),
     tagRow: document.getElementById("tag-row"),
     storyBlocks: document.getElementById("story-blocks"),
     topMatchList: document.getElementById("top-match-list"),
@@ -244,6 +247,19 @@
     window.localStorage.setItem(PENDING_UPLOAD_KEY, JSON.stringify(items));
   }
 
+  function setSyncStatus(message, syncState = "") {
+    state.syncMessage = message;
+    state.syncState = syncState;
+    if (!refs.syncStatus) {
+      return;
+    }
+    refs.syncStatus.textContent = message;
+    refs.syncStatus.classList.remove("is-success", "is-error");
+    if (syncState) {
+      refs.syncStatus.classList.add(syncState);
+    }
+  }
+
   async function recordResult(topResult, userVector) {
     const record = {
       heroId: topResult.hero.id,
@@ -258,6 +274,7 @@
     pool.push(record);
     saveResultPool(pool);
     queuePendingUpload(record);
+    setSyncStatus("正在同步到云端…");
     await flushPendingUploads();
   }
 
@@ -297,11 +314,14 @@
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Supabase insert failed:", errorText);
+        setSyncStatus(`云端同步失败：${errorText}`, "is-error");
         return;
       }
       savePendingUploads([]);
+      setSyncStatus("云端同步成功", "is-success");
     } catch (error) {
       console.error("Supabase insert failed:", error);
+      setSyncStatus(`云端同步失败：${error}`, "is-error");
     }
   }
 
@@ -618,6 +638,7 @@
     refs.resultName.textContent = `${hero.typeLabel || hero.name} · ${hero.name}`;
     refs.resultTypeTagline.textContent = hero.typeTagline || hero.archetype;
     refs.resultSummary.textContent = `${hero.sourceNote} 你的当前结果与 ${hero.name} 的人格向量匹配度为 ${topResult.similarity}% ，当前模型里这一类型的稀有度为 ${hero.rarityScore || 80}/100，因此这里展示的是“角色人格类型”，而不只是单纯的英雄相似度。`;
+    setSyncStatus(state.syncMessage || "结果已生成，等待同步状态", state.syncState || "");
 
     refs.tagRow.innerHTML = "";
     getSignatureTags(state.userVector).forEach((tag) => {
