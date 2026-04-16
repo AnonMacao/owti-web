@@ -744,23 +744,6 @@ button:disabled {
   text-align: center;
 }
 
-.sync-status {
-  margin: 2px 0 0;
-  min-height: 24px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--muted);
-  text-align: center;
-}
-
-.sync-status.is-success {
-  color: #317a4c;
-}
-
-.sync-status.is-error {
-  color: #b24e4b;
-}
-
 .tag-row {
   display: flex;
   flex-wrap: wrap;
