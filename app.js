@@ -5,9 +5,6 @@
   const DEVELOPER_SESSION_KEY = "OWTI_DEVELOPER_SESSION";
   const SUPABASE_URL = "https://uzhdavpdgwlnnxmbztkl.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__PBBdiSGQzb3KguebMeAQA_3xgwMdeX";
-  const supabaseClient = window.supabase
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
-    : null;
 
   const state = {
     currentQuestionIndex: 0,
@@ -271,10 +268,6 @@
   }
 
   async function flushPendingUploads() {
-    if (!supabaseClient) {
-      return;
-    }
-
     const pending = getPendingUploads();
     if (!pending.length) {
       return;
@@ -290,9 +283,20 @@
     }));
 
     try {
-      const { error } = await supabaseClient.from("owti_results").insert(payload);
-      if (error) {
-        console.error("Supabase insert failed:", error.message);
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/owti_results`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Supabase insert failed:", errorText);
         return;
       }
       savePendingUploads([]);
@@ -337,21 +341,24 @@
   async function fetchResultPool() {
     await flushPendingUploads();
 
-    if (!supabaseClient) {
-      return getResultPool();
-    }
-
     try {
-      const { data, error } = await supabaseClient
-        .from("owti_results")
-        .select("hero_id, hero_name, type_code, similarity, tags, created_at")
-        .order("created_at", { ascending: true });
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/owti_results?select=hero_id,hero_name,type_code,similarity,tags,created_at&order=created_at.asc`,
+        {
+          headers: {
+            apikey: SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+          }
+        }
+      );
 
-      if (error) {
-        console.error("Supabase select failed:", error.message);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Supabase select failed:", errorText);
         return getResultPool();
       }
 
+      const data = await response.json();
       return (data || []).map((item) => ({
         heroId: item.hero_id,
         heroName: item.hero_name,
@@ -382,7 +389,7 @@
 
     refs.developerStatStrip.innerHTML = `
       <div class="stat-card">
-        <div class="stat-label">${supabaseClient ? "云端结果数" : "本地结果数"}</div>
+        <div class="stat-label">云端结果数</div>
         <div class="stat-value">${total}</div>
       </div>
       <div class="stat-card">
