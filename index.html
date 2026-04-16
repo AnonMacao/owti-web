@@ -9,13 +9,13 @@
 <body>
   <div class="page-shell">
     <aside class="panel info-panel">
-      <div class="eyebrow">OWTI Prototype</div>
+      <div class="eyebrow">OWTI Guide</div>
       <h1>守望先锋人格匹配测试</h1>
-      <p class="lede">这一版先把“人格向量匹配”做实：题目不测玩法，而是测你在共情、原则、理想、边界感和自我整合上的倾向，再与官方英雄页的人设文本做量化匹配。</p>
+      <p class="lede">测一测你最像哪一类守望先锋角色人格。不是测操作，不是测段位，而是看你的气质、判断方式和内在人格张力更接近谁。</p>
 
       <div class="stat-strip">
         <div class="stat-card">
-          <div class="stat-label">首发角色</div>
+          <div class="stat-label">角色类型</div>
           <div id="hero-count" class="stat-value">12</div>
         </div>
         <div class="stat-card">
@@ -23,31 +23,31 @@
           <div id="dimension-count" class="stat-value">8</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">每次作答</div>
+          <div class="stat-label">每次题量</div>
           <div id="question-count" class="stat-value">30</div>
         </div>
       </div>
 
       <details class="fold-panel" id="model-anchor">
         <summary>
-          <span>查看角色与维度设定</span>
+          <span>查看测试说明与角色卡</span>
           <span class="fold-hint">展开</span>
         </summary>
         <div class="fold-content">
           <section class="subsection fold-section">
-            <h2>量化维度</h2>
-            <p>每个维度都会被换算成 `0-100` 的连续分值。角色向量来自官网设定的二次建模，不是暴雪官方公开标签。</p>
+            <h2>测试会看什么</h2>
+            <p>它会根据你的共情、原则感、理想主义、边界感、表达方式和自我整合倾向，匹配最接近的角色人格类型。</p>
             <div id="dimension-list" class="dimension-list"></div>
           </section>
 
           <section class="subsection fold-section">
-            <h2>建模方式</h2>
-            <p>题目先生成你的 `8` 维人格向量，再用加权均方差计算你与角色的距离，输出最接近的英雄和 Top 3 相似角色。这样更像“人格气质匹配”，而不是“战术打法归类”。</p>
+            <h2>结果怎么看</h2>
+            <p>完成后你会看到主结果角色、人格代号、稀有度、Top 3 相似角色，以及一张可以直接导出的分享图。</p>
           </section>
 
           <section class="subsection fold-section">
-            <h2>本版角色依据</h2>
-            <p>首发选了 12 个人格辨识度很高的角色，下面的说明都基于官网英雄页的背景与角色定位做的压缩总结。</p>
+            <h2>角色人格卡</h2>
+            <p>下面是当前版本的角色人格卡。它们以官方公开设定为灵感整理，不代表官方结论，仅供娱乐和分享。</p>
             <div id="hero-roster" class="hero-roster"></div>
           </section>
         </div>
@@ -58,39 +58,39 @@
       <div class="stage">
         <section id="screen-intro" class="screen intro-screen active">
           <div class="hero-banner">
-            <div class="eyebrow">Single Page Test</div>
-            <h2>用户点击即可做题，结果直接匹配最接近的 OW 角色人格。</h2>
-            <p>这一版是静态单页原型，打开 `index.html` 就能运行。没有登录、没有后端，题库计分、角色相似度和结果解释都在本地完成，适合你先校准“像不像”。</p>
+            <div class="eyebrow">Personality Match</div>
+            <h2>你更像哪一位守望先锋角色？</h2>
+            <p>30 道题，测出你的角色人格类型。完成后会给你主结果、相似角色排行、人格代号和一张可分享的结果海报。</p>
           </div>
 
           <div class="intro-grid">
             <div class="intro-card">
               <div>
-                <h3>这版已经包含</h3>
+                <h3>你会得到</h3>
                 <ul>
-                  <li>100 题题库中每次随机抽 30 题，使用五档同意度量表</li>
-                  <li>12 个角色的人格向量与官方来源链接</li>
-                  <li>Top 1 与 Top 3 角色匹配结果</li>
-                  <li>雷达图、维度对照和自动生成的结果解读</li>
+                  <li>你的主人格角色类型</li>
+                  <li>专属人格代号与稀有度</li>
+                  <li>Top 3 相似角色排行</li>
+                  <li>一张可以导出的分享图</li>
                 </ul>
               </div>
               <div class="cta-row">
                 <button id="start-button" class="primary-btn">开始测试</button>
-                <button id="sample-button" class="secondary-btn">随机体验一组答案</button>
+                <button id="sample-button" class="secondary-btn">先看一个示例结果</button>
               </div>
             </div>
 
             <div class="intro-card">
               <div>
-                <h3>适合你接下来做什么</h3>
+                <h3>测试说明</h3>
                 <ul>
-                  <li>先看角色分布是不是太集中，避免总是测出同一两个人</li>
-                  <li>请熟悉角色设定的玩家试测，看“我觉得像谁”与结果是否接近</li>
-                  <li>如果想继续做 UI 或小程序，这一层数据和算法可以直接迁移</li>
+                  <li>这不是官方测试，也不是心理诊断</li>
+                  <li>它更接近“角色气质匹配”与娱乐向人格测试</li>
+                  <li>建议按第一直觉作答，结果会更像你</li>
                 </ul>
               </div>
               <div class="cta-row">
-                <button id="jump-model-button" class="ghost-btn">先看角色建模</button>
+                <button id="jump-model-button" class="ghost-btn">查看角色卡</button>
               </div>
             </div>
           </div>
