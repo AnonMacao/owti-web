@@ -157,7 +157,7 @@
     const progress = ((state.currentQuestionIndex + 1) / state.activeQuestions.length) * 100;
     const selectedValue = state.answers[state.currentQuestionIndex];
 
-    refs.progressText.textContent = `绗?${state.currentQuestionIndex + 1} / ${state.activeQuestions.length} 棰榒;
+    refs.progressText.textContent = `第 ${state.currentQuestionIndex + 1} / ${state.activeQuestions.length} 题`;
     refs.progressPercent.textContent = `${Math.round(progress)}%`;
     refs.progressFill.style.width = `${progress}%`;
     refs.prevButton.disabled = state.currentQuestionIndex === 0;
@@ -257,20 +257,6 @@
   function savePendingUploads(items) {
     window.localStorage.setItem(PENDING_UPLOAD_KEY, JSON.stringify(items));
   }
-
-  function setSyncStatus(message, syncState = "") {
-    state.syncMessage = message;
-    state.syncState = syncState;
-    if (!refs.syncStatus) {
-      return;
-    }
-    refs.syncStatus.textContent = message;
-    refs.syncStatus.classList.remove("is-success", "is-error");
-    if (syncState) {
-      refs.syncStatus.classList.add(syncState);
-    }
-  }
-
   async function recordResult(topResult, userVector) {
     const record = {
       heroId: topResult.hero.id,
@@ -285,7 +271,6 @@
     pool.push(record);
     saveResultPool(pool);
     queuePendingUpload(record);
-    setSyncStatus("姝ｅ湪鍚屾鍒颁簯绔€?);
     await flushPendingUploads();
   }
 
@@ -325,14 +310,11 @@
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Supabase insert failed:", errorText);
-        setSyncStatus(`浜戠鍚屾澶辫触锛?{errorText}`, "is-error");
         return;
       }
       savePendingUploads([]);
-      setSyncStatus("浜戠鍚屾鎴愬姛", "is-success");
     } catch (error) {
       console.error("Supabase insert failed:", error);
-      setSyncStatus(`浜戠鍚屾澶辫触锛?{error}`, "is-error");
     }
   }
 
@@ -347,7 +329,7 @@
     }
 
     if (!isDeveloperAuthenticated()) {
-      const input = window.prompt("璇疯緭鍏ュ紑鍙戣€呭瘑鐮?);
+      const input = window.prompt("请输入开发者密码");
       if (input === null) {
         params.delete("dev");
         const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
@@ -355,7 +337,7 @@
         return;
       }
       if (input !== DEVELOPER_PASSWORD) {
-        window.alert("瀵嗙爜涓嶆纭?);
+        window.alert("密码不正确");
         params.delete("dev");
         const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
         window.history.replaceState({}, "", nextUrl);
@@ -491,7 +473,7 @@
   }
 
   async function clearResultPool() {
-    const confirmed = window.confirm("纭畾瑕佹竻绌哄綋鍓嶆祻瑙堝櫒閲岀殑缁撴灉姹犲悧锛?);
+    const confirmed = window.confirm("确定要清空当前浏览器里的结果池吗？");
     if (!confirmed) {
       return;
     }
@@ -610,28 +592,28 @@
       .slice(0, 3);
 
     const tension = [...diffs].sort((a, b) => b.diff - a.diff)[0];
-    const sharedLabels = aligned.length ? aligned.map((item) => item.name).join("銆?) : "鏁翠綋姘旇川";
+    const sharedLabels = aligned.length ? aligned.map((item) => item.name).join("、") : "整体气质";
 
-    let nuanceSentence = `浠庤繖濂楅鐨勭粨鏋滅湅锛屼綘鍜?{hero.name}鐨勭粏鑺傚垎甯冨凡缁忓緢璐磋繎锛岄€傚悎鐩存帴浣滀负绗竴涓荤被鍨嬨€俙;
+    let nuanceSentence = `从这组题目来看，你和${hero.name}的人格重心已经很接近，适合作为当前的第一结果。`;
     if (tension && tension.diff >= 14) {
       const meta = window.DIMENSION_META[tension.id];
       const userHigher = userVector[tension.id] > hero.vector[tension.id];
       nuanceSentence = userHigher
-        ? `缁嗙湅浼氬彂鐜帮紝浣犳瘮${hero.name}鏇?{meta.highCompare}銆傛墍浠ヤ綘鍍忕殑鏄?TA 鐨勬牳蹇冧汉鏍煎紶鍔涳紝浣嗕細鏄惧緱鏇粹€滀綘鑷繁鈥濅竴鐐广€俙
-        : `缁嗙湅浼氬彂鐜帮紝浣犳瘮${hero.name}鏇?{meta.lowCompare}銆備篃灏辨槸璇达紝浣犳帴杩?TA 鐨勫簳鑹诧紝浣嗘皵璐ㄤ細鏇存敹涓€鐐广€俙;
+        ? `细看会发现，你比${hero.name}更${meta.highCompare}。所以你像的是 TA 的核心张力，但会更有你自己的展开方式。`
+        : `细看会发现，你比${hero.name}更${meta.lowCompare}。也就是说，你接近 TA 的底色，但表达会更收一点。`;
     }
 
     return [
       {
-        title: "瑙掕壊鏍稿績",
-        body: `${hero.blurb} 杩欑増寤烘ā閲岋紝${hero.name}琚綊鍒扳€?{hero.archetype}鈥濊繖涓€缁勪汉鏍煎師鍨嬨€俙
+        title: "角色核心",
+        body: `${hero.blurb} 这版建模里，${hero.name}被归在“${hero.archetype}”这一组人格原型里。`
       },
       {
-        title: "涓轰粈涔堝儚",
-        body: `浣犲拰${hero.name}鏈€閲嶅悎鐨勫湴鏂瑰湪浜?{sharedLabels}銆傝繖鎰忓懗鐫€浣犱滑鍋氬垽鏂椂锛屽簳灞傚紶鍔涙槸鎺ヨ繎鐨勶紝涓嶅彧鏄〃闈㈤鏍煎儚銆俙
+        title: "为什么像",
+        body: `你和${hero.name}最重合的地方在于 ${sharedLabels}。这意味着你们做判断时，底层驱动力是接近的，不只是表面风格像。`
       },
       {
-        title: `${hero.typeCode || "OWTI"} 浜烘牸閫熷啓`,
+        title: `${hero.typeCode || "OWTI"} 人格速写`,
         body: `${hero.personaCopy || ""} ${nuanceSentence}`.trim()
       }
     ];
@@ -648,8 +630,7 @@
     refs.resultRarityPill.textContent = buildRarityText(hero);
     refs.resultName.textContent = `${hero.typeLabel || hero.name} 路 ${hero.name}`;
     refs.resultTypeTagline.textContent = hero.typeTagline || hero.archetype;
-    refs.resultSummary.textContent = `${hero.sourceNote} 浣犵殑褰撳墠缁撴灉涓?${hero.name} 鐨勪汉鏍煎悜閲忓尮閰嶅害涓?${topResult.similarity}% 锛屽綋鍓嶆ā鍨嬮噷杩欎竴绫诲瀷鐨勭█鏈夊害涓?${hero.rarityScore || 80}/100锛屽洜姝よ繖閲屽睍绀虹殑鏄€滆鑹蹭汉鏍肩被鍨嬧€濓紝鑰屼笉鍙槸鍗曠函鐨勮嫳闆勭浉浼煎害銆俙;
-    setSyncStatus(state.syncMessage || "缁撴灉宸茬敓鎴愶紝绛夊緟鍚屾鐘舵€?, state.syncState || "");
+    refs.resultSummary.textContent = `${hero.sourceNote} 你的当前结果与 ${hero.name} 的人格向量匹配度为 ${topResult.similarity}% ，当前模型里这一类型的稀有度为 ${hero.rarityScore || 80}/100，因此这里展示的是“角色人格类型”，而不只是单纯的英雄相似度。`;
 
     refs.tagRow.innerHTML = "";
     getSignatureTags(state.userVector).forEach((tag) => {
@@ -712,7 +693,7 @@
     });
 
     refs.vectorNote.textContent = buildVectorNote(state.userVector);
-    refs.finePrint.innerHTML = `瀹樻柟渚濇嵁锛?a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">${hero.name} 鑻遍泟椤?/a>銆傚綋鍓嶅垎鍊兼槸渚濇嵁瀹樼綉鏂囨湰鍋氱殑浜哄伐閲忓寲寤烘ā锛屽悗缁鏋滀綘瑕佹墿鍒版极鐢汇€佺煭绡囧拰璇煶鍙拌瘝锛屽彲浠ョ户缁牎鍑嗘瘡涓鑹茬殑鍚戦噺銆俙;
+    refs.finePrint.innerHTML = `官方依据：<a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">${hero.name} 英雄页</a>。当前分值是依据官网文本做的人工量化建模，后续如果你要扩到漫画、短篇和语音台词，也可以继续校准每个角色的向量。`;
 
     drawRadarChart(state.userVector, hero.vector, hero.accent);
   }
@@ -721,7 +702,7 @@
     return window.DIMENSIONS.map((dim) => ({
       score: userVector[dim.id],
       distance: Math.abs(userVector[dim.id] - 50),
-      label: userVector[dim.id] >= 50 ? `${dim.name}鍋忛珮` : `${dim.name}鍋忎綆`
+      label: userVector[dim.id] >= 50 ? `${dim.name}偏高` : `${dim.name}偏低`
     }))
       .sort((a, b) => b.distance - a.distance)
       .slice(0, 4)
@@ -734,15 +715,15 @@
       score: userVector[dim.id]
     })).sort((a, b) => b.score - a.score);
 
-    const topTwo = sorted.slice(0, 2).map((item) => item.name).join("銆?);
-    const bottomTwo = sorted.slice(-2).map((item) => item.name).join("銆?);
-    return `浣犵殑楂樺垎缁村害涓昏钀藉湪 ${topTwo}锛岃鏄庤繖浜涙槸浣犳洿绋冲畾鐨勪汉鏍奸┍鍔ㄥ姏锛涚浉瀵逛綆涓€浜涚殑鏄?${bottomTwo}锛岃繖閫氬父浼氬喅瀹氫綘鍦ㄤ汉闄呰竟鐣屽拰琛ㄨ揪椋庢牸涓婄殑鏀舵斁鏂瑰紡銆俙;
+    const topTwo = sorted.slice(0, 2).map((item) => item.name).join("、");
+    const bottomTwo = sorted.slice(-2).map((item) => item.name).join("、");
+    return `你的高分维度主要落在 ${topTwo}，说明这些是你更稳定的人格驱动力；相对低一些的是 ${bottomTwo}，这通常会影响你在人际边界和表达风格上的收放方式。`;
   }
 
   function buildRarityText(hero) {
-    const label = hero.rarityLabel || "灏戣";
+    const label = hero.rarityLabel || "少见";
     const score = hero.rarityScore || 80;
-    return `绋€鏈夊害 ${score} 路 ${label}`;
+    return `稀有度 ${score} · ${label}`;
   }
 
   function loadImage(src) {
@@ -1012,7 +993,7 @@
   function renderHeroPortrait(hero) {
     refs.heroVisual.classList.remove("has-image");
     refs.resultPortrait.removeAttribute("src");
-    refs.resultPortrait.alt = `${hero.name} Q鐗堝舰璞;
+    refs.resultPortrait.alt = `${hero.name} 角色图`;
     refs.resultPortrait.onload = () => {
       refs.heroVisual.classList.add("has-image");
     };
@@ -1111,7 +1092,7 @@
       item.className = "dimension-card";
       item.innerHTML = `
         <strong>${dim.name}</strong>
-        <span>${dim.axisLow} 鈫?${dim.axisHigh}</span>
+        <span>${dim.axisLow} -> ${dim.axisHigh}</span>
         <span>${dim.cardText}</span>
       `;
       refs.dimensionList.appendChild(item);
@@ -1124,15 +1105,16 @@
       const item = document.createElement("div");
       item.className = "hero-mini";
       item.innerHTML = `
-        <img class="hero-mini-thumb" src="${getHeroImageSrc(hero)}" alt="${hero.name} Q鐗堝舰璞? onerror="this.style.display='none'; this.parentElement.style.gridTemplateColumns='1fr';">
+        <img class="hero-mini-thumb" src="${getHeroImageSrc(hero)}" alt="${hero.name} 角色图" onerror="this.style.display='none'; this.parentElement.style.gridTemplateColumns='1fr';">
         <div class="hero-mini-body">
-          <strong style="color:${hero.accent};">${hero.name} 路 ${hero.archetype}</strong>
+          <strong style="color:${hero.accent};">${hero.name} · ${hero.archetype}</strong>
           <span>${hero.sourceNote}</span>
-          <span><a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">鏌ョ湅瀹樼綉鑻遍泟椤?/a></span>
+          <span><a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">查看官网英雄页</a></span>
         </div>
       `;
       refs.heroRoster.appendChild(item);
     });
   }
 })();
+
 
