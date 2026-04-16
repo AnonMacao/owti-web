@@ -1,4 +1,13 @@
 (function () {
+  const RESULT_POOL_KEY = "OWTI_RESULT_POOL_V1";
+  const DEVELOPER_PASSWORD = "owti2026";
+  const DEVELOPER_SESSION_KEY = "OWTI_DEVELOPER_SESSION";
+  const SUPABASE_URL = "https://uzhdavpdgwlnnxmbztkl.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__PBBdiSGQzb3KguebMeAQA_3xgwMdeX";
+  const supabaseClient = window.supabase
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+    : null;
+
   const state = {
     currentQuestionIndex: 0,
     activeQuestions: [],
@@ -11,13 +20,17 @@
   const screens = {
     intro: document.getElementById("screen-intro"),
     quiz: document.getElementById("screen-quiz"),
-    result: document.getElementById("screen-result")
+    result: document.getElementById("screen-result"),
+    developer: document.getElementById("screen-developer")
   };
 
   const refs = {
     heroCount: document.getElementById("hero-count"),
     dimensionCount: document.getElementById("dimension-count"),
     questionCount: document.getElementById("question-count"),
+    developerStatStrip: document.getElementById("developer-stat-strip"),
+    developerHeroList: document.getElementById("developer-hero-list"),
+    developerRecentList: document.getElementById("developer-recent-list"),
     dimensionList: document.getElementById("dimension-list"),
     heroRoster: document.getElementById("hero-roster"),
     questionTitle: document.getElementById("question-title"),
@@ -56,10 +69,17 @@
     renderDimensionList();
     renderRoster();
     bindEvents();
+    void maybeOpenDeveloperScreenFromUrl();
   }
 
   function bindEvents() {
     document.getElementById("start-button").addEventListener("click", startQuiz);
+    document.getElementById("developer-back-button").addEventListener("click", () => {
+      showScreen("intro");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    document.getElementById("developer-export-button").addEventListener("click", exportResultPool);
+    document.getElementById("developer-clear-button").addEventListener("click", clearResultPool);
     document.getElementById("jump-model-button").addEventListener("click", () => {
       refs.modelAnchor.open = true;
       refs.modelAnchor.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -195,9 +215,218 @@
   function finishQuiz() {
     state.userVector = calculateUserVector();
     state.ranking = rankHeroes(state.userVector);
+    void recordResult(state.ranking[0], state.userVector);
     renderResults();
     showScreen("result");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function getResultPool() {
+    try {
+      return JSON.parse(window.localStorage.getItem(RESULT_POOL_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function saveResultPool(pool) {
+    window.localStorage.setItem(RESULT_POOL_KEY, JSON.stringify(pool));
+  }
+
+  async function recordResult(topResult, userVector) {
+    const record = {
+      heroId: topResult.hero.id,
+      heroName: topResult.hero.name,
+      typeCode: topResult.hero.typeCode || "OWTI",
+      similarity: topResult.similarity,
+      createdAt: new Date().toISOString(),
+      tags: getSignatureTags(userVector)
+    };
+
+    const pool = getResultPool();
+    pool.push(record);
+    saveResultPool(pool);
+
+    if (!supabaseClient) {
+      return;
+    }
+
+    try {
+      const { error } = await supabaseClient
+        .from("owti_results")
+        .insert({
+          hero_id: record.heroId,
+          hero_name: record.heroName,
+          type_code: record.typeCode,
+          similarity: record.similarity,
+          tags: record.tags,
+          created_at: record.createdAt
+        });
+      if (error) {
+        console.error("Supabase insert failed:", error.message);
+      }
+    } catch (error) {
+      console.error("Supabase insert failed:", error);
+    }
+  }
+
+  function isDeveloperAuthenticated() {
+    return window.sessionStorage.getItem(DEVELOPER_SESSION_KEY) === "ok";
+  }
+
+  async function maybeOpenDeveloperScreenFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("dev") !== "1") {
+      return;
+    }
+
+    if (!isDeveloperAuthenticated()) {
+      const input = window.prompt("请输入开发者密码");
+      if (input === null) {
+        params.delete("dev");
+        const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
+        window.history.replaceState({}, "", nextUrl);
+        return;
+      }
+      if (input !== DEVELOPER_PASSWORD) {
+        window.alert("密码不正确");
+        params.delete("dev");
+        const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
+        window.history.replaceState({}, "", nextUrl);
+        return;
+      }
+      window.sessionStorage.setItem(DEVELOPER_SESSION_KEY, "ok");
+    }
+
+    await renderDeveloperScreen();
+    showScreen("developer");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function fetchResultPool() {
+    if (!supabaseClient) {
+      return getResultPool();
+    }
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("owti_results")
+        .select("hero_id, hero_name, type_code, similarity, tags, created_at")
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Supabase select failed:", error.message);
+        return getResultPool();
+      }
+
+      return (data || []).map((item) => ({
+        heroId: item.hero_id,
+        heroName: item.hero_name,
+        typeCode: item.type_code,
+        similarity: item.similarity,
+        createdAt: item.created_at,
+        tags: item.tags || []
+      }));
+    } catch (error) {
+      console.error("Supabase select failed:", error);
+      return getResultPool();
+    }
+  }
+
+  async function renderDeveloperScreen() {
+    const pool = await fetchResultPool();
+    const counts = Object.fromEntries(window.HEROES.map((hero) => [hero.id, 0]));
+    pool.forEach((item) => {
+      if (counts[item.heroId] !== undefined) {
+        counts[item.heroId] += 1;
+      }
+    });
+
+    const total = pool.length;
+    const uniqueHeroes = Object.values(counts).filter((count) => count > 0).length;
+    const topHero = [...window.HEROES]
+      .sort((a, b) => counts[b.id] - counts[a.id])[0];
+
+    refs.developerStatStrip.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">${supabaseClient ? "云端结果数" : "本地结果数"}</div>
+        <div class="stat-value">${total}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">出现角色数</div>
+        <div class="stat-value">${uniqueHeroes}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">当前最高频</div>
+        <div class="stat-value">${total ? topHero.name : "-"}</div>
+      </div>
+    `;
+
+    refs.developerHeroList.innerHTML = "";
+    [...window.HEROES]
+      .sort((a, b) => counts[b.id] - counts[a.id])
+      .forEach((hero) => {
+        const count = counts[hero.id];
+        const ratio = total ? Math.round((count / total) * 100) : 0;
+        const row = document.createElement("div");
+        row.className = "metric-row";
+        row.innerHTML = `
+          <strong>${hero.name}</strong>
+          <div class="metric-track">
+            <div class="metric-user" style="width:${ratio}%;"></div>
+          </div>
+          <span>${count} / ${ratio}%</span>
+        `;
+        refs.developerHeroList.appendChild(row);
+      });
+
+    refs.developerRecentList.innerHTML = "";
+    pool.slice(-8).reverse().forEach((item, index) => {
+      const hero = window.HEROES.find((entry) => entry.id === item.heroId);
+      const card = document.createElement("div");
+      card.className = "top-match-item";
+      card.innerHTML = `
+        <div class="mini-dot" style="background:${hero?.accent || "#1b8aa4"};"></div>
+        <div>
+          <strong>${item.typeCode} · ${item.heroName}</strong>
+          <span>${formatTime(item.createdAt)} · ${item.tags.join(" / ")}</span>
+        </div>
+        <div class="score-badge">${item.similarity}%</div>
+      `;
+      refs.developerRecentList.appendChild(card);
+    });
+
+    if (!pool.length) {
+      refs.developerRecentList.innerHTML = `<div class="story-card">当前还没有本地结果。先做几轮测试，再回来看分布会更有意义。</div>`;
+    }
+  }
+
+  function formatTime(isoString) {
+    const date = new Date(isoString);
+    return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  }
+
+  async function exportResultPool() {
+    const pool = await fetchResultPool();
+    const blob = new Blob([JSON.stringify(pool, null, 2)], { type: "application/json" });
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "owti-result-pool.json";
+    link.href = objectUrl;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
+  }
+
+  async function clearResultPool() {
+    const confirmed = window.confirm("确定要清空当前浏览器里的结果池吗？");
+    if (!confirmed) {
+      return;
+    }
+    saveResultPool([]);
+    refs.developerRecentList.innerHTML = `<div class="story-card">本地结果池已清空。云端结果不会被这个按钮删除。</div>`;
+    await renderDeveloperScreen();
   }
 
   function calculateUserVector() {

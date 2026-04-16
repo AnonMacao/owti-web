@@ -176,10 +176,58 @@
             </div>
           </div>
         </section>
+
+        <section id="screen-developer" class="screen">
+          <div class="hero-banner">
+            <div class="eyebrow">Developer</div>
+            <h2>结果池与本地分布</h2>
+            <p>这里统计的是当前浏览器里的测试结果池。适合你观察角色分布、看模型是否偏向某几类角色，也可以导出 JSON 手动汇总。</p>
+          </div>
+
+          <div class="intro-grid">
+            <div class="intro-card">
+              <div>
+                <h3>结果池概览</h3>
+                <div id="developer-stat-strip" class="stat-strip"></div>
+              </div>
+              <div class="cta-row">
+                <button id="developer-export-button" class="secondary-btn">导出结果池 JSON</button>
+                <button id="developer-clear-button" class="ghost-btn">清空本地结果池</button>
+                <button id="developer-back-button" class="primary-btn">返回首页</button>
+              </div>
+            </div>
+
+            <div class="intro-card">
+              <div>
+                <h3>说明</h3>
+                <ul>
+                  <li>当前统计的是“本设备 / 当前浏览器”的结果，不会自动汇总其他朋友的数据</li>
+                  <li>如果你想看更真实的整体分布，可以让大家把导出的 JSON 发给你，再统一合并</li>
+                  <li>如果后续要自动统计所有用户，需要接后端或数据库</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-spacer"></div>
+
+          <div class="result-grid">
+            <div class="debug-card">
+              <h3>角色分布</h3>
+              <div id="developer-hero-list" class="metric-list"></div>
+            </div>
+
+            <div class="debug-card">
+              <h3>最近结果</h3>
+              <div id="developer-recent-list" class="top-match-list"></div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./model.js"></script>
   <script src="./questions.js"></script>
   <script src="./app.js"></script>
