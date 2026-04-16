@@ -441,8 +441,8 @@
       card.innerHTML = `
         <div class="mini-dot" style="background:${hero?.accent || "#1b8aa4"};"></div>
         <div>
-          <strong>${item.typeCode} 路 ${item.heroName}</strong>
-          <span>${formatTime(item.createdAt)} 路 ${item.tags.join(" / ")}</span>
+          <strong>${item.typeCode} · ${item.heroName}</strong>
+          <span>${formatTime(item.createdAt)} · ${item.tags.join(" / ")}</span>
         </div>
         <div class="score-badge">${item.similarity}%</div>
       `;
@@ -628,7 +628,7 @@
     refs.heroBadge.style.background = `linear-gradient(145deg, ${hero.accent}, #13212d)`;
     refs.resultTypeCode.textContent = hero.typeCode || "OWTI";
     refs.resultRarityPill.textContent = buildRarityText(hero);
-    refs.resultName.textContent = `${hero.typeLabel || hero.name} 路 ${hero.name}`;
+    refs.resultName.textContent = `${hero.typeLabel || hero.name} · ${hero.name}`;
     refs.resultTypeTagline.textContent = hero.typeTagline || hero.archetype;
     refs.resultSummary.textContent = `${hero.sourceNote} 你的当前结果与 ${hero.name} 的人格向量匹配度为 ${topResult.similarity}% ，当前模型里这一类型的稀有度为 ${hero.rarityScore || 80}/100，因此这里展示的是“角色人格类型”，而不只是单纯的英雄相似度。`;
 
@@ -659,8 +659,8 @@
       item.innerHTML = `
         <div class="mini-dot" style="background:${entry.hero.accent};"></div>
         <div>
-          <strong>Top ${index + 1} 路 ${entry.hero.typeCode || "OWTI"} 路 ${entry.hero.typeLabel || entry.hero.name}</strong>
-          <span>${entry.hero.name} 路 ${entry.hero.archetype}</span>
+          <strong>Top ${index + 1} · ${entry.hero.typeCode || "OWTI"} · ${entry.hero.typeLabel || entry.hero.name}</strong>
+          <span>${entry.hero.name} · ${entry.hero.archetype}</span>
         </div>
         <div class="score-badge">${entry.similarity}%</div>
       `;
@@ -679,7 +679,7 @@
           <div class="metric-hero" style="width:${heroScore}%;"></div>
           <div class="metric-user" style="width:${userScore}%;"></div>
         </div>
-        <span>浣?${userScore} / 瑙?${heroScore}</span>
+        <span>你 ${userScore} / 角色 ${heroScore}</span>
       `;
       refs.metricList.appendChild(row);
     });
