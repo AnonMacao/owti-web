@@ -1,10 +1,24 @@
-(function () {
+﻿(function () {
   const RESULT_POOL_KEY = "OWTI_RESULT_POOL_V1";
   const PENDING_UPLOAD_KEY = "OWTI_PENDING_UPLOADS_V1";
   const DEVELOPER_PASSWORD = "owti2026";
   const DEVELOPER_SESSION_KEY = "OWTI_DEVELOPER_SESSION";
   const SUPABASE_URL = "https://uzhdavpdgwlnnxmbztkl.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__PBBdiSGQzb3KguebMeAQA_3xgwMdeX";
+  const HERO_IMAGE_EXTENSIONS = {
+    tracer: "jpg",
+    reinhardt: "jpg",
+    mercy: "jpg",
+    sombra: "jpg",
+    winston: "jpg",
+    ana: "jpg",
+    genji: "jpg",
+    zenyatta: "jpg",
+    kiriko: "jpg",
+    mei: "jpg",
+    reaper: "jpg",
+    moira: "jpg"
+  };
 
   const state = {
     currentQuestionIndex: 0,
@@ -12,9 +26,7 @@
     answers: [],
     userVector: null,
     ranking: [],
-    bounds: {},
-    syncMessage: "",
-    syncState: ""
+    bounds: {}
   };
 
   const screens = {
@@ -48,7 +60,6 @@
     resultName: document.getElementById("result-name"),
     resultTypeTagline: document.getElementById("result-type-tagline"),
     resultSummary: document.getElementById("result-summary"),
-    syncStatus: document.getElementById("sync-status"),
     tagRow: document.getElementById("tag-row"),
     storyBlocks: document.getElementById("story-blocks"),
     topMatchList: document.getElementById("top-match-list"),
@@ -146,7 +157,7 @@
     const progress = ((state.currentQuestionIndex + 1) / state.activeQuestions.length) * 100;
     const selectedValue = state.answers[state.currentQuestionIndex];
 
-    refs.progressText.textContent = `第 ${state.currentQuestionIndex + 1} / ${state.activeQuestions.length} 题`;
+    refs.progressText.textContent = `绗?${state.currentQuestionIndex + 1} / ${state.activeQuestions.length} 棰榒;
     refs.progressPercent.textContent = `${Math.round(progress)}%`;
     refs.progressFill.style.width = `${progress}%`;
     refs.prevButton.disabled = state.currentQuestionIndex === 0;
@@ -274,7 +285,7 @@
     pool.push(record);
     saveResultPool(pool);
     queuePendingUpload(record);
-    setSyncStatus("正在同步到云端…");
+    setSyncStatus("姝ｅ湪鍚屾鍒颁簯绔€?);
     await flushPendingUploads();
   }
 
@@ -314,14 +325,14 @@
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Supabase insert failed:", errorText);
-        setSyncStatus(`云端同步失败：${errorText}`, "is-error");
+        setSyncStatus(`浜戠鍚屾澶辫触锛?{errorText}`, "is-error");
         return;
       }
       savePendingUploads([]);
-      setSyncStatus("云端同步成功", "is-success");
+      setSyncStatus("浜戠鍚屾鎴愬姛", "is-success");
     } catch (error) {
       console.error("Supabase insert failed:", error);
-      setSyncStatus(`云端同步失败：${error}`, "is-error");
+      setSyncStatus(`浜戠鍚屾澶辫触锛?{error}`, "is-error");
     }
   }
 
@@ -336,7 +347,7 @@
     }
 
     if (!isDeveloperAuthenticated()) {
-      const input = window.prompt("请输入开发者密码");
+      const input = window.prompt("璇疯緭鍏ュ紑鍙戣€呭瘑鐮?);
       if (input === null) {
         params.delete("dev");
         const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
@@ -344,7 +355,7 @@
         return;
       }
       if (input !== DEVELOPER_PASSWORD) {
-        window.alert("密码不正确");
+        window.alert("瀵嗙爜涓嶆纭?);
         params.delete("dev");
         const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
         window.history.replaceState({}, "", nextUrl);
@@ -409,15 +420,15 @@
 
     refs.developerStatStrip.innerHTML = `
       <div class="stat-card">
-        <div class="stat-label">云端结果数</div>
+        <div class="stat-label">浜戠缁撴灉鏁?/div>
         <div class="stat-value">${total}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">出现角色数</div>
+        <div class="stat-label">鍑虹幇瑙掕壊鏁?/div>
         <div class="stat-value">${uniqueHeroes}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">当前最高频</div>
+        <div class="stat-label">褰撳墠鏈€楂橀</div>
         <div class="stat-value">${total ? topHero.name : "-"}</div>
       </div>
     `;
@@ -448,8 +459,8 @@
       card.innerHTML = `
         <div class="mini-dot" style="background:${hero?.accent || "#1b8aa4"};"></div>
         <div>
-          <strong>${item.typeCode} · ${item.heroName}</strong>
-          <span>${formatTime(item.createdAt)} · ${item.tags.join(" / ")}</span>
+          <strong>${item.typeCode} 路 ${item.heroName}</strong>
+          <span>${formatTime(item.createdAt)} 路 ${item.tags.join(" / ")}</span>
         </div>
         <div class="score-badge">${item.similarity}%</div>
       `;
@@ -457,7 +468,7 @@
     });
 
     if (!pool.length) {
-      refs.developerRecentList.innerHTML = `<div class="story-card">当前还没有本地结果。先做几轮测试，再回来看分布会更有意义。</div>`;
+      refs.developerRecentList.innerHTML = `<div class="story-card">褰撳墠杩樻病鏈夋湰鍦扮粨鏋溿€傚厛鍋氬嚑杞祴璇曪紝鍐嶅洖鏉ョ湅鍒嗗竷浼氭洿鏈夋剰涔夈€?/div>`;
     }
   }
 
@@ -480,12 +491,12 @@
   }
 
   async function clearResultPool() {
-    const confirmed = window.confirm("确定要清空当前浏览器里的结果池吗？");
+    const confirmed = window.confirm("纭畾瑕佹竻绌哄綋鍓嶆祻瑙堝櫒閲岀殑缁撴灉姹犲悧锛?);
     if (!confirmed) {
       return;
     }
     saveResultPool([]);
-    refs.developerRecentList.innerHTML = `<div class="story-card">本地结果池已清空。云端结果不会被这个按钮删除。</div>`;
+    refs.developerRecentList.innerHTML = `<div class="story-card">鏈湴缁撴灉姹犲凡娓呯┖銆備簯绔粨鏋滀笉浼氳杩欎釜鎸夐挳鍒犻櫎銆?/div>`;
     await renderDeveloperScreen();
   }
 
@@ -599,28 +610,28 @@
       .slice(0, 3);
 
     const tension = [...diffs].sort((a, b) => b.diff - a.diff)[0];
-    const sharedLabels = aligned.length ? aligned.map((item) => item.name).join("、") : "整体气质";
+    const sharedLabels = aligned.length ? aligned.map((item) => item.name).join("銆?) : "鏁翠綋姘旇川";
 
-    let nuanceSentence = `从这套题的结果看，你和${hero.name}的细节分布已经很贴近，适合直接作为第一主类型。`;
+    let nuanceSentence = `浠庤繖濂楅鐨勭粨鏋滅湅锛屼綘鍜?{hero.name}鐨勭粏鑺傚垎甯冨凡缁忓緢璐磋繎锛岄€傚悎鐩存帴浣滀负绗竴涓荤被鍨嬨€俙;
     if (tension && tension.diff >= 14) {
       const meta = window.DIMENSION_META[tension.id];
       const userHigher = userVector[tension.id] > hero.vector[tension.id];
       nuanceSentence = userHigher
-        ? `细看会发现，你比${hero.name}更${meta.highCompare}。所以你像的是 TA 的核心人格张力，但会显得更“你自己”一点。`
-        : `细看会发现，你比${hero.name}更${meta.lowCompare}。也就是说，你接近 TA 的底色，但气质会更收一点。`;
+        ? `缁嗙湅浼氬彂鐜帮紝浣犳瘮${hero.name}鏇?{meta.highCompare}銆傛墍浠ヤ綘鍍忕殑鏄?TA 鐨勬牳蹇冧汉鏍煎紶鍔涳紝浣嗕細鏄惧緱鏇粹€滀綘鑷繁鈥濅竴鐐广€俙
+        : `缁嗙湅浼氬彂鐜帮紝浣犳瘮${hero.name}鏇?{meta.lowCompare}銆備篃灏辨槸璇达紝浣犳帴杩?TA 鐨勫簳鑹诧紝浣嗘皵璐ㄤ細鏇存敹涓€鐐广€俙;
     }
 
     return [
       {
-        title: "角色核心",
-        body: `${hero.blurb} 这版建模里，${hero.name}被归到“${hero.archetype}”这一组人格原型。`
+        title: "瑙掕壊鏍稿績",
+        body: `${hero.blurb} 杩欑増寤烘ā閲岋紝${hero.name}琚綊鍒扳€?{hero.archetype}鈥濊繖涓€缁勪汉鏍煎師鍨嬨€俙
       },
       {
-        title: "为什么像",
-        body: `你和${hero.name}最重合的地方在于${sharedLabels}。这意味着你们做判断时，底层张力是接近的，不只是表面风格像。`
+        title: "涓轰粈涔堝儚",
+        body: `浣犲拰${hero.name}鏈€閲嶅悎鐨勫湴鏂瑰湪浜?{sharedLabels}銆傝繖鎰忓懗鐫€浣犱滑鍋氬垽鏂椂锛屽簳灞傚紶鍔涙槸鎺ヨ繎鐨勶紝涓嶅彧鏄〃闈㈤鏍煎儚銆俙
       },
       {
-        title: `${hero.typeCode || "OWTI"} 人格速写`,
+        title: `${hero.typeCode || "OWTI"} 浜烘牸閫熷啓`,
         body: `${hero.personaCopy || ""} ${nuanceSentence}`.trim()
       }
     ];
@@ -635,10 +646,10 @@
     refs.heroBadge.style.background = `linear-gradient(145deg, ${hero.accent}, #13212d)`;
     refs.resultTypeCode.textContent = hero.typeCode || "OWTI";
     refs.resultRarityPill.textContent = buildRarityText(hero);
-    refs.resultName.textContent = `${hero.typeLabel || hero.name} · ${hero.name}`;
+    refs.resultName.textContent = `${hero.typeLabel || hero.name} 路 ${hero.name}`;
     refs.resultTypeTagline.textContent = hero.typeTagline || hero.archetype;
-    refs.resultSummary.textContent = `${hero.sourceNote} 你的当前结果与 ${hero.name} 的人格向量匹配度为 ${topResult.similarity}% ，当前模型里这一类型的稀有度为 ${hero.rarityScore || 80}/100，因此这里展示的是“角色人格类型”，而不只是单纯的英雄相似度。`;
-    setSyncStatus(state.syncMessage || "结果已生成，等待同步状态", state.syncState || "");
+    refs.resultSummary.textContent = `${hero.sourceNote} 浣犵殑褰撳墠缁撴灉涓?${hero.name} 鐨勪汉鏍煎悜閲忓尮閰嶅害涓?${topResult.similarity}% 锛屽綋鍓嶆ā鍨嬮噷杩欎竴绫诲瀷鐨勭█鏈夊害涓?${hero.rarityScore || 80}/100锛屽洜姝よ繖閲屽睍绀虹殑鏄€滆鑹蹭汉鏍肩被鍨嬧€濓紝鑰屼笉鍙槸鍗曠函鐨勮嫳闆勭浉浼煎害銆俙;
+    setSyncStatus(state.syncMessage || "缁撴灉宸茬敓鎴愶紝绛夊緟鍚屾鐘舵€?, state.syncState || "");
 
     refs.tagRow.innerHTML = "";
     getSignatureTags(state.userVector).forEach((tag) => {
@@ -667,8 +678,8 @@
       item.innerHTML = `
         <div class="mini-dot" style="background:${entry.hero.accent};"></div>
         <div>
-          <strong>Top ${index + 1} · ${entry.hero.typeCode || "OWTI"} · ${entry.hero.typeLabel || entry.hero.name}</strong>
-          <span>${entry.hero.name} · ${entry.hero.archetype}</span>
+          <strong>Top ${index + 1} 路 ${entry.hero.typeCode || "OWTI"} 路 ${entry.hero.typeLabel || entry.hero.name}</strong>
+          <span>${entry.hero.name} 路 ${entry.hero.archetype}</span>
         </div>
         <div class="score-badge">${entry.similarity}%</div>
       `;
@@ -687,7 +698,7 @@
           <div class="metric-hero" style="width:${heroScore}%;"></div>
           <div class="metric-user" style="width:${userScore}%;"></div>
         </div>
-        <span>你 ${userScore} / 角 ${heroScore}</span>
+        <span>浣?${userScore} / 瑙?${heroScore}</span>
       `;
       refs.metricList.appendChild(row);
     });
@@ -701,7 +712,7 @@
     });
 
     refs.vectorNote.textContent = buildVectorNote(state.userVector);
-    refs.finePrint.innerHTML = `官方依据：<a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">${hero.name} 英雄页</a>。当前分值是依据官网文本做的人工量化建模，后续如果你要扩到漫画、短篇和语音台词，可以继续校准每个角色的向量。`;
+    refs.finePrint.innerHTML = `瀹樻柟渚濇嵁锛?a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">${hero.name} 鑻遍泟椤?/a>銆傚綋鍓嶅垎鍊兼槸渚濇嵁瀹樼綉鏂囨湰鍋氱殑浜哄伐閲忓寲寤烘ā锛屽悗缁鏋滀綘瑕佹墿鍒版极鐢汇€佺煭绡囧拰璇煶鍙拌瘝锛屽彲浠ョ户缁牎鍑嗘瘡涓鑹茬殑鍚戦噺銆俙;
 
     drawRadarChart(state.userVector, hero.vector, hero.accent);
   }
@@ -710,7 +721,7 @@
     return window.DIMENSIONS.map((dim) => ({
       score: userVector[dim.id],
       distance: Math.abs(userVector[dim.id] - 50),
-      label: userVector[dim.id] >= 50 ? `${dim.name}偏高` : `${dim.name}偏低`
+      label: userVector[dim.id] >= 50 ? `${dim.name}鍋忛珮` : `${dim.name}鍋忎綆`
     }))
       .sort((a, b) => b.distance - a.distance)
       .slice(0, 4)
@@ -723,15 +734,15 @@
       score: userVector[dim.id]
     })).sort((a, b) => b.score - a.score);
 
-    const topTwo = sorted.slice(0, 2).map((item) => item.name).join("、");
-    const bottomTwo = sorted.slice(-2).map((item) => item.name).join("、");
-    return `你的高分维度主要落在 ${topTwo}，说明这些是你更稳定的人格驱动力；相对低一些的是 ${bottomTwo}，这通常会决定你在人际边界和表达风格上的收放方式。`;
+    const topTwo = sorted.slice(0, 2).map((item) => item.name).join("銆?);
+    const bottomTwo = sorted.slice(-2).map((item) => item.name).join("銆?);
+    return `浣犵殑楂樺垎缁村害涓昏钀藉湪 ${topTwo}锛岃鏄庤繖浜涙槸浣犳洿绋冲畾鐨勪汉鏍奸┍鍔ㄥ姏锛涚浉瀵逛綆涓€浜涚殑鏄?${bottomTwo}锛岃繖閫氬父浼氬喅瀹氫綘鍦ㄤ汉闄呰竟鐣屽拰琛ㄨ揪椋庢牸涓婄殑鏀舵斁鏂瑰紡銆俙;
   }
 
   function buildRarityText(hero) {
-    const label = hero.rarityLabel || "少见";
+    const label = hero.rarityLabel || "灏戣";
     const score = hero.rarityScore || 80;
-    return `稀有度 ${score} · ${label}`;
+    return `绋€鏈夊害 ${score} 路 ${label}`;
   }
 
   function loadImage(src) {
@@ -775,14 +786,6 @@
     ctx.fillStyle = "rgba(255,255,255,0.82)";
     roundRect(ctx, 78, 62, 1044, 1476, 48, true);
 
-    const halo = ctx.createRadialGradient(600, 420, 60, 600, 420, 320);
-    halo.addColorStop(0, `${hexToRgba(hero.accent, 0.22)}`);
-    halo.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.fillStyle = halo;
-    ctx.beginPath();
-    ctx.arc(600, 430, 320, 0, Math.PI * 2);
-    ctx.fill();
-
     ctx.fillStyle = "#c84a16";
     ctx.font = "800 54px 'Trebuchet MS', 'Microsoft YaHei UI', sans-serif";
     ctx.textAlign = "center";
@@ -792,44 +795,52 @@
     ctx.fillText("守望先锋人格匹配测试", 600, 172);
 
     const portrait = refs.resultPortrait;
+    ctx.save();
+    roundRect(ctx, 160, 206, 880, 420, 42);
+    ctx.clip();
     if (portrait && portrait.complete && portrait.naturalWidth > 0) {
-      drawTrimmedPortraitFit(ctx, portrait, 255, 170, 690, 560);
+      drawHeroCover(ctx, portrait, 160, 206, 880, 420);
     } else {
       ctx.fillStyle = hero.accent;
-      roundRect(ctx, 430, 270, 340, 420, 42, true);
+      ctx.fillRect(160, 206, 880, 420);
       ctx.fillStyle = "#ffffff";
       ctx.font = "800 140px 'Trebuchet MS', 'Microsoft YaHei UI', sans-serif";
-      ctx.fillText(hero.badge, 600, 505);
+      ctx.fillText(hero.badge, 600, 458);
     }
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(16, 32, 48, 0.08)";
+    ctx.lineWidth = 2;
+    roundRect(ctx, 160, 206, 880, 420, 42, false, true);
 
     ctx.fillStyle = "#1b8aa4";
-    roundRect(ctx, 425, 760, 350, 82, 41, true);
+    roundRect(ctx, 425, 674, 350, 82, 41, true);
     ctx.fillStyle = "#0f5060";
     ctx.font = "800 48px 'Trebuchet MS', 'Microsoft YaHei UI', sans-serif";
-    ctx.fillText(hero.typeCode || "OWTI", 600, 816);
+    ctx.fillText(hero.typeCode || "OWTI", 600, 730);
 
     ctx.fillStyle = "#102030";
     ctx.font = "800 84px 'Trebuchet MS', 'Microsoft YaHei UI', sans-serif";
-    ctx.fillText(hero.typeLabel || hero.name, 600, 948);
+    ctx.fillText(hero.typeLabel || hero.name, 600, 872);
 
     ctx.fillStyle = "#4e6270";
     ctx.font = "600 36px 'Aptos', 'Microsoft YaHei UI', sans-serif";
-    wrapText(ctx, `${hero.name} · ${hero.archetype}`, 600, 1004, 820, 46);
+    wrapText(ctx, `${hero.name} · ${hero.archetype}`, 600, 928, 820, 46);
 
     ctx.fillStyle = "rgba(240, 180, 79, 0.18)";
-    roundRect(ctx, 405, 1066, 390, 62, 31, true);
+    roundRect(ctx, 405, 990, 390, 62, 31, true);
     ctx.fillStyle = "#9a6a14";
     ctx.font = "800 30px 'Aptos', 'Microsoft YaHei UI', sans-serif";
-    ctx.fillText(buildRarityText(hero), 600, 1109);
+    ctx.fillText(buildRarityText(hero), 600, 1033);
 
     ctx.fillStyle = "#506572";
     ctx.font = "600 30px 'Aptos', 'Microsoft YaHei UI', sans-serif";
-    wrapText(ctx, hero.typeTagline || hero.archetype, 600, 1194, 860, 44);
+    wrapText(ctx, hero.typeTagline || hero.archetype, 600, 1112, 860, 44);
 
     const summary = `与你的匹配度 ${topResult.similarity}% · ${getSignatureTags(state.userVector).slice(0, 3).join(" / ")}`;
     ctx.fillStyle = "#6a7c86";
     ctx.font = "600 24px 'Aptos', 'Microsoft YaHei UI', sans-serif";
-    wrapText(ctx, summary, 600, 1288, 860, 36);
+    wrapText(ctx, summary, 600, 1208, 860, 36);
 
     ctx.fillStyle = "rgba(16, 32, 48, 0.08)";
     roundRect(ctx, 170, 1388, 860, 92, 26, true);
@@ -865,7 +876,6 @@
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
     }, "image/png");
   }
-
   function roundRect(ctx, x, y, width, height, radius, fill = false, stroke = false) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -889,6 +899,31 @@
     const drawX = x + (width - drawWidth) / 2;
     const drawY = y + (height - drawHeight) / 2;
     ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+  }
+
+  function drawHeroCover(ctx, image, x, y, width, height) {
+    const sourceWidth = image.naturalWidth || image.width;
+    const sourceHeight = image.naturalHeight || image.height;
+    const targetRatio = width / height;
+    const sourceRatio = sourceWidth / sourceHeight;
+
+    let cropX = 0;
+    let cropY = 0;
+    let cropWidth = sourceWidth;
+    let cropHeight = sourceHeight;
+
+    if (sourceRatio > targetRatio) {
+      cropWidth = sourceHeight * targetRatio;
+      cropX = (sourceWidth - cropWidth) / 2;
+    } else {
+      cropHeight = sourceWidth / targetRatio;
+      cropY = Math.max(0, (sourceHeight - cropHeight) * 0.22);
+      if (cropY + cropHeight > sourceHeight) {
+        cropY = sourceHeight - cropHeight;
+      }
+    }
+
+    ctx.drawImage(image, cropX, cropY, cropWidth, cropHeight, x, y, width, height);
   }
 
   function getOpaqueBounds(image) {
@@ -970,13 +1005,14 @@
   }
 
   function getHeroImageSrc(hero) {
-    return `./assets/heroes/${hero.id}.png`;
+    const extension = HERO_IMAGE_EXTENSIONS[hero.id] || "png";
+    return `./assets/heroes/${hero.id}.${extension}`;
   }
 
   function renderHeroPortrait(hero) {
     refs.heroVisual.classList.remove("has-image");
     refs.resultPortrait.removeAttribute("src");
-    refs.resultPortrait.alt = `${hero.name} Q版形象`;
+    refs.resultPortrait.alt = `${hero.name} Q鐗堝舰璞;
     refs.resultPortrait.onload = () => {
       refs.heroVisual.classList.add("has-image");
     };
@@ -1075,7 +1111,7 @@
       item.className = "dimension-card";
       item.innerHTML = `
         <strong>${dim.name}</strong>
-        <span>${dim.axisLow} → ${dim.axisHigh}</span>
+        <span>${dim.axisLow} 鈫?${dim.axisHigh}</span>
         <span>${dim.cardText}</span>
       `;
       refs.dimensionList.appendChild(item);
@@ -1088,14 +1124,15 @@
       const item = document.createElement("div");
       item.className = "hero-mini";
       item.innerHTML = `
-        <img class="hero-mini-thumb" src="${getHeroImageSrc(hero)}" alt="${hero.name} Q版形象" onerror="this.style.display='none'; this.parentElement.style.gridTemplateColumns='1fr';">
+        <img class="hero-mini-thumb" src="${getHeroImageSrc(hero)}" alt="${hero.name} Q鐗堝舰璞? onerror="this.style.display='none'; this.parentElement.style.gridTemplateColumns='1fr';">
         <div class="hero-mini-body">
-          <strong style="color:${hero.accent};">${hero.name} · ${hero.archetype}</strong>
+          <strong style="color:${hero.accent};">${hero.name} 路 ${hero.archetype}</strong>
           <span>${hero.sourceNote}</span>
-          <span><a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">查看官网英雄页</a></span>
+          <span><a href="${hero.sourceUrl}" target="_blank" rel="noreferrer">鏌ョ湅瀹樼綉鑻遍泟椤?/a></span>
         </div>
       `;
       refs.heroRoster.appendChild(item);
     });
   }
 })();
+

@@ -1,0 +1,62 @@
+﻿[
+    {
+        "id":  "tracer",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\tracer.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/bltb9e273d8483050b8/631a8aab3ab6f40dd2a90699/1600_Tracer.jpg"
+    },
+    {
+        "id":  "reinhardt",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\reinhardt.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt8215ad99f856a606/631a8b03636d390da7825ddb/1600_Reinhardt.jpg"
+    },
+    {
+        "id":  "mercy",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\mercy.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blta556d4020266a6db/631a8b1eeef3ae0e03c743a2/1600_Mercy.jpg"
+    },
+    {
+        "id":  "sombra",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\sombra.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt73c08ba684761b8a/631a8ac1f581050de0035de2/1600_Sombra.jpg"
+    },
+    {
+        "id":  "winston",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\winston.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/bltf9557fb8c51d1c43/631a8aa4eef3ae0e03c74396/1600_Winston.jpg"
+    },
+    {
+        "id":  "ana",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\ana.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt97ec60cf959e81f3/631a8babe337fa0dc7263beb/1600_Ana.jpg"
+    },
+    {
+        "id":  "genji",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\genji.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt22836a6cfd1c3335/631a8b576d5f7a0df8d92798/1600_Genji.jpg"
+    },
+    {
+        "id":  "zenyatta",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\zenyatta.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt31b9997e4476de74/631a8a57eef3ae0e03c7438a/1600_Zenyatta.jpg"
+    },
+    {
+        "id":  "kiriko",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\kiriko.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt74033e83230dc856/631a8b34f581050de0035df2/1600_Kiriko.jpg"
+    },
+    {
+        "id":  "mei",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\mei.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/bltd0eb5529be69efbc/633773a6f87c00687e8ef21a/1600_Mei_02.jpg"
+    },
+    {
+        "id":  "reaper",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\reaper.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt2c301b09e7e28f15/631a8af9e7bdcf0dd996c8d1/1600_Reaper.jpg"
+    },
+    {
+        "id":  "moira",
+        "path":  "E:\\Projects\\OWTI-Web\\assets\\heroes\\moira.jpg",
+        "source":  "https://blz-contentstack-images.akamaized.net/v3/assets/blt2477dcaf4ebd440c/blt8188c6691a334d73/631a8b17be2fcf0db5eea4bc/1600_Moira.jpg"
+    }
+]
